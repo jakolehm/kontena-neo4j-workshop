@@ -1,0 +1,49 @@
+name: twitter-graph
+version: 2
+services:
+  lb:
+    image: kontena/lb:latest
+    deploy:
+      strategy: daemon # will be deployed to every node in a grid
+    ports:
+      - 80:80
+
+  neo4j:
+    image: jakolehm/twitter-graph-neo4j:2.3
+    build:
+      context: neo4j/
+    secrets:
+      - secret: TWITTER_GRAPH_NEO4J_AUTH
+        name: NEO4J_AUTH
+        type: env
+    environment:
+      - KONTENA_LB_INTERNAL_PORT=7474
+      - KONTENA_LB_VIRTUAL_PATH=/
+    links:
+      - lb
+
+  importer:
+    image: jakolehm/twitter-graph-neo4j-importer:latest
+    build:
+      context: twitter-import/
+    command: python /import_user.py $$TWITTER_USER
+    secrets:
+      - secret: TWITTER_GRAPH_NEO4J_PASSWORD
+        name: NEO4J_PASSWORD
+        type: env
+      - secret: TWITTER_GRAPH_CONSUMER_KEY
+        name: TWITTER_CONSUMER_KEY
+        type: env
+      - secret: TWITTER_GRAPH_CONSUMER_SECRET
+        name: TWITTER_CONSUMER_SECRET
+        type: env
+      - secret: TWITTER_GRAPH_USER_KEY
+        name: TWITTER_USER_KEY
+        type: env
+      - secret: TWITTER_GRAPH_USER_SECRET
+        name: TWITTER_USER_SECRET
+        type: env
+    environment:
+      - NEO4J_HOST=%{project}-neo4j
+    depends_on:
+      - neo4j
