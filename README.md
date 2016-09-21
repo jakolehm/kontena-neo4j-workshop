@@ -9,7 +9,10 @@ Take homes:
 
 ## Prerequisities
 
-- a laptop with Ruby (2.0 or higher) and Vagrant (1.6 or higher) installed
+- a laptop with following software installed:
+  - Ruby (2.0 or higher)
+  - Vagrant (1.6 or higher)
+  - VirtualBox (4.0 or higher)
 - twitter account
 
 ## Setup Kontena Environment
