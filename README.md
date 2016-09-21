@@ -125,7 +125,7 @@ $ kontena vault write TWITTER_GRAPH_NEO4J_PASSWORD secretzz
 Deploy the whole stack (loadbalancer, neo4j, importer):
 
 ```
-$ kontena app deploy
+$ TWITTER_USER=<your_twitter_username> kontena app deploy
 ```
 
 Watch logs:
