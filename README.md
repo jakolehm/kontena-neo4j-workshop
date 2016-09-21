@@ -1,6 +1,6 @@
 # Workshop: Running Neo4j Container on Kontena Platform to Analyze Your Twitter Graph
 
-In this workshop, you'll learn how to install and scale the Kontena container and microservices platform. Once the Kontena platform is up and running, we'll move on to installing Neo4j & Twitter graph analyzer, enabling the audience to analyze their own respective Twitter graphs.
+In this workshop, you'll learn how to install and scale the [Kontena](https://kontena.io) container and microservices platform. Once the Kontena platform is up and running, we'll move on to installing [Neo4j](https://neo4j.com) & [Twitter](https://twitter.com) graph analyzer, enabling the audience to analyze their own respective Twitter graphs.
 
 Take homes:
 
@@ -13,7 +13,7 @@ Take homes:
   - Ruby (2.0 or higher)
   - Vagrant (1.6 or higher)
   - VirtualBox (4.0 or higher)
-- twitter account
+- Twitter account
 
 ## Setup Kontena Environment
 
