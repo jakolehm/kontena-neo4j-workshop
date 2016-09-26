@@ -1,6 +1,7 @@
 name: twitter-graph
 version: 2
 services:
+
   importer:
     image: jakolehm/twitter-graph-neo4j-importer:latest
     #build:
@@ -23,14 +24,18 @@ services:
         name: TWITTER_USER_SECRET
         type: env
     environment:
-      - NEO4J_HOST=%{project}-neo4j
+      - NEO4J_HOST=%{project}-neo-1
     depends_on:
-      - neo4j
+      - neo
 
-  neo4j:
-    image: jakolehm/twitter-graph-neo4j:2.3
+  neo:
+    image: jakolehm/twitter-graph-neo4j:2.3-enterprise
     #build:
     #  context: neo4j/
+    stateful: true
+    instances: 3
+    deploy:
+      wait_for_port: 7474
     secrets:
       - secret: TWITTER_GRAPH_NEO4J_AUTH
         name: NEO4J_AUTH
@@ -38,6 +43,8 @@ services:
     environment:
       - KONTENA_LB_INTERNAL_PORT=7474
       - KONTENA_LB_VIRTUAL_PATH=/
+      - NEO4J_DATABASE_MODE=HA
+      - NEO4J_INITIAL_HOSTS=%{project}-neo-1
     links:
       - lb
 
