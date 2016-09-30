@@ -33,7 +33,7 @@ services:
     #build:
     #  context: neo4j/
     stateful: true
-    instances: 3
+    instances: 1
     deploy:
       wait_for_port: 7474
     secrets:
@@ -41,10 +41,13 @@ services:
         name: NEO4J_AUTH
         type: env
     environment:
-      - KONTENA_LB_INTERNAL_PORT=7474
-      - KONTENA_LB_VIRTUAL_PATH=/
-      - NEO4J_DATABASE_MODE=HA
-      - NEO4J_INITIAL_HOSTS=%{project}-neo-1
+      KONTENA_LB_INTERNAL_PORT: 7474
+      KONTENA_LB_VIRTUAL_PATH: /
+      KONTENA_LB_BALANCE: source
+      #NEO4J_DATABASE_MODE: HA
+      #NEO4J_INITIAL_HOSTS: %{project}-neo-1,%{project}-neo-2,%{project}-neo-3
+      #KONTENA_LB_CUSTOM_SETTINGS: |
+      #  option httpchk HEAD /db/manage/server/ha/master HTTP/1.0\r\nAuthorization:\ Basic\ bmVvNGo6c2VjcmV0eno=
     links:
       - lb
 
