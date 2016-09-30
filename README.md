@@ -14,6 +14,7 @@ Take homes:
   - Vagrant (1.6 or higher)
   - VirtualBox (4.0 or higher)
 - Twitter account
+- Git clone this repo!
 
 ## Setup Kontena Environment
 
@@ -23,7 +24,7 @@ Take homes:
 Install the Kontena CLI with Rubygems package manager (included in Ruby):
 
 ```
-$ gem install kontena-cli kontena-plugin-vagrant
+$ gem install kontena-cli kontena-plugin-digitalocean
 ```
 
 > prefix command with sudo  if you don't have permissions to install gems
@@ -37,13 +38,14 @@ $ kontena register
 #### Install Kontena Master
 
 ```
-$ kontena vagrant master create
+$ kontena digitalocean master create --token <do_token> --ssh-key ./id_rsa.pub  --region sfo2
 ```
 
 #### Login to Kontena Master and Create a Grid
 
 ```
-$ kontena login --name vagrant http://192.168.66.100:8080
+$ export SSL_IGNORE_ERRORS=true
+$ kontena login --name workshop https://ip
 ```
 
 Enter the login info:
@@ -72,7 +74,7 @@ $ kontena grid create twitter-graph
 #### Install Kontena Nodes
 
 ```
-$ kontena vagrant node create --instances 1
+$ kontena digitalocean node create --ssh-key ./id_rsa.pub --region sfo2 --size 2gb
 ```
 > use bigger --instances number if your laptop can manage multi-node grid
 
@@ -139,13 +141,12 @@ $ kontena app logs -t
 
 ## Login to Neo4j Browser
 
-Copy private ip from one of the grid nodes:
+Copy public ip from the loadbalancer instance:
 
 ```
-$ kontena node ls
-$ kontena node show <name>
+$ kontena app show loadbalancer
 ...
-  private ip: 172.28.x.x <--
+  public ip: x.x.x.x <-- this
 ...
 ```
 
@@ -155,3 +156,28 @@ Open browser with ip from previous step and login to Neo4j:
 - password: secretzz
 
 Start exploring your Twitter graph!
+
+## Scaling Neo4J
+
+> You need to have at least 3 nodes in your grid
+
+- add more nodes to your grid
+
+  ```
+  $ kontena digitalocean node create --token <token> --ssh-key ./id_rsa.pub --size 2gb --region sfo2
+  $ kontena digitalocean node create --token <token> --ssh-key ./id_rsa.pub --size 2gb --region sfo2
+  ```
+
+- change `neo` service instance count from 1 to 3
+- uncomment `neo` service environment definitions
+- redeploy neo service
+
+  ```
+  $ kontena app deploy neo
+  ```
+
+- check from service logs that Neo4j cluster is working
+
+  ```
+  $ kontena app logs -t neo
+  ```

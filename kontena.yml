@@ -4,8 +4,6 @@ services:
 
   importer:
     image: jakolehm/twitter-graph-neo4j-importer:latest
-    #build:
-    #  context: twitter-import/
     command: python /import_user.py $TWITTER_USER
     secrets:
       - secret: TWITTER_GRAPH_NEO4J_PASSWORD
@@ -30,12 +28,8 @@ services:
 
   neo:
     image: jakolehm/twitter-graph-neo4j:2.3-enterprise
-    #build:
-    #  context: neo4j/
     stateful: true
     instances: 1
-    deploy:
-      wait_for_port: 7474
     secrets:
       - secret: TWITTER_GRAPH_NEO4J_AUTH
         name: NEO4J_AUTH
