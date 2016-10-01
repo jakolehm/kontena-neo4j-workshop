@@ -156,7 +156,7 @@ $ kontena app logs -t
 Copy public ip from the loadbalancer instance:
 
 ```
-$ kontena app show loadbalancer
+$ kontena app show lb
 ...
   public ip: x.x.x.x <-- this
 ...
