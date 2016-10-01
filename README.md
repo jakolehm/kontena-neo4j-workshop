@@ -11,8 +11,6 @@ Take homes:
 
 - a laptop with following software installed:
   - Ruby (2.0 or higher)
-  - Vagrant (1.6 or higher)
-  - VirtualBox (4.0 or higher)
 - Twitter account
 - Git clone this repo!
 
@@ -37,8 +35,22 @@ $ kontena register
 
 #### Install Kontena Master
 
+Set DigitalOcean token to env:
+
+- linux/mac:
+  ```
+  $ export DO_TOKEN=cd9215088f02a2a249d93ad7cbc91d22f30dd9a04f40e9a2388f02f36f9ee2bf
+  ```
+- windows:
+  ```
+  $ set DO_TOKEN=cd9215088f02a2a249d93ad7cbc91d22f30dd9a04f40e9a2388f02f36f9ee2bf
+  ```
+
+
+Provision Kontena Master:
+
 ```
-$ kontena digitalocean master create --token <do_token> --ssh-key ./id_rsa.pub  --region sfo2
+$ kontena digitalocean master create --token $DO_TOKEN --ssh-key ./id_rsa.pub  --region sfo2
 ```
 
 #### Login to Kontena Master and Create a Grid
@@ -74,7 +86,7 @@ $ kontena grid create twitter-graph
 #### Install Kontena Nodes
 
 ```
-$ kontena digitalocean node create --ssh-key ./id_rsa.pub --region sfo2 --size 2gb
+$ kontena digitalocean node create --token $DO_TOKEN --ssh-key ./id_rsa.pub --region sfo2 --size 2gb
 ```
 > use bigger --instances number if your laptop can manage multi-node grid
 
@@ -99,7 +111,7 @@ You need to create a twitter application because twitter importer needs read acc
 - fill in information:
   - Name: "unique name for your app"
   - Description: kontena-neo4j-demo
-  - Website: http://neo4j-demo.kontena.io/
+  - Website: http://network.graphdemos.com
   - Agree
   - click "Create your Twitter Application"
 - go to "Keys and Access Tokens" tab in Twitter app settings
@@ -164,13 +176,13 @@ Start exploring your Twitter graph!
 - add more nodes to your grid
 
   ```
-  $ kontena digitalocean node create --token <token> --ssh-key ./id_rsa.pub --size 2gb --region sfo2
-  $ kontena digitalocean node create --token <token> --ssh-key ./id_rsa.pub --size 2gb --region sfo2
+  $ kontena digitalocean node create --token $DO_TOKEN --ssh-key ./id_rsa.pub --size 2gb --region sfo2
+  $ kontena digitalocean node create --token $DO_TOKEN --ssh-key ./id_rsa.pub --size 2gb --region sfo2
   ```
 
 - change `neo` service instance count from 1 to 3
 - uncomment `neo` service environment definitions
-- redeploy neo service
+- redeploy `neo` service
 
   ```
   $ kontena app deploy neo
