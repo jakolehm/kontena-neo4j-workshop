@@ -1,0 +1,67 @@
+cypher for ryguyrg
+
+// Find my top favorited tweets that use one of my top 5 hashtags
+MATCH (u:User {screen_name:'ryguyrg'})-[p:POSTS]-(t:Tweet)-[c:TAGS]->(ht:Hashtag)
+WHERE  NOT (t)-[:RETWEETS]->(:Tweet)
+WITH ht, u, count(ht) AS cnt
+ORDER BY cnt DESC
+LIMIT 5
+MATCH (u)-[p:POSTS]-(t:Tweet)-[tg:TAGS]-(ht)
+RETURN *
+ORDER BY t.favorites DESC
+LIMIT 20
+;
+
+
+// Find my top links by favorites
+MATCH (u:User {screen_name:'ryguyrg'})-[p:POSTS]-(t:Tweet)-[c:CONTAINS]->(l:Link)
+WHERE t.favorites > 20 AND l.url <> 'null'
+AND NOT (t)-[:RETWEETS]->(:Tweet)
+RETURN u,p,t,c,l
+ORDER BY t.favorites DESC
+LIMIT 25
+
+// Find people following me by popularity
+MATCH (ou:User)-[r:FOLLOWS]->(u:User {screen_name:'ryguyrg'}) RETURN ou.screen_name AS sn, ou.followers AS followers ORDER BY followers DESC LIMIT 25
+
+
+
+// Find large followers where ratio is good
+MATCH (ou:User)-[r:FOLLOWS]->(u:User {screen_name:'ryguyrg'})
+WHERE ou.following < 1000
+RETURN ou.screen_name AS sn, ou.followers AS followers, ou.following AS following
+ORDER BY followers DESC LIMIT 25
+
+
+
+// BIG Find people who mention me, but don't follow me
+MATCH (ou)-[p:POSTS]->(t:Tweet)-[m:MENTIONS]->(u:User {screen_name:'ryguyrg'})
+WHERE
+  NOT ((ou)-[:FOLLOWS]->(u))
+  AND
+  NOT (t)-[:RETWEETS]-()
+RETURN ou,p,t,m,u;
+
+// Table of people who mention me, but don't follow me
+MATCH (ou)-[p:POSTS]->(t:Tweet)-[:MENTIONS]->(u:User {screen_name:'ryguyrg'})
+RETURN DISTINCT(ou.screen_name) AS sn, ou.followers AS followers
+ORDER BY followers DESC
+
+
+// Table of people who mention me, but don't follow me, and I've never mentioned 1
+MATCH (ou)-[p:POSTS]->(t:Tweet)-[:MENTIONS]->(u:User {screen_name:'ryguyrg'})
+WHERE NOT
+  (u:User {screen_name:'ryguyrg'})-[:POSTS]-(:Tweet)-[:MENTIONS]->(ou)
+RETURN
+  DISTINCT(ou.screen_name) AS sn, ou.followers AS followers
+ORDER BY followers DESC;
+
+
+// Table of people who mention me, but don't follow me, and I've never mentioned, with hashtags
+MATCH (ou)-[p:POSTS]->(t:Tweet)-[:MENTIONS]->(u:User {screen_name:'ryguyrg'}),
+(t)-[:TAGS]-(ht:Hashtag)
+WHERE NOT
+  (u:User {screen_name:'ryguyrg'})-[:POSTS]-(:Tweet)-[:MENTIONS]->(ou)
+RETURN
+  DISTINCT(ou.screen_name) AS sn, ou.followers AS followers, COLLECT(ht.name) AS hashtags
+ORDER BY followers DESC;
